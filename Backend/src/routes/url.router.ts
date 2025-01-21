@@ -6,21 +6,18 @@ const urlRouter = Router();
 let counter: number = 1;
 
 urlRouter.post("/generate-short-url", async (req: Request, res: Response) => {
-    console.log("inside route");
     try {
         const longUrl: string = req.body.longUrl;
-        console.log(longUrl);
 
-        const shortUrl = base62.encode(counter);
+        const code = base62.encode(counter);
         counter++;
 
-        const url = new Url({ shortUrl, longUrl });
+        const url = new Url({ shortUrl: code, longUrl });
 
         await url.save();
 
-        console.log(url);
-
-        res.status(200).json({ url });
+        console.log("http://localhost:8900/"+code);
+        res.status(200).json({ shortUrl: "http://localhost:8900/" + code });
     } catch (error) {
         console.log(error);
         res.status(400).json({ error });
