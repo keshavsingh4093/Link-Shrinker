@@ -1,45 +1,10 @@
-import { Router, Request, Response } from "express";
-import { Url } from "../models/url.model";
-import * as base62 from "base62-ts";
+import { generateShortUrl, getLongUrl } from "../controllers/url.controller";
+import { Router } from "express";
 
 const urlRouter = Router();
-let counter: number = 1;
 
-urlRouter.post("/generate-short-url", async (req: Request, res: Response) => {
-    try {
-        const longUrl: string = req.body.longUrl;
+urlRouter.post("/generate", generateShortUrl);
 
-        const code = base62.encode(counter);
-        counter++;
-
-        const url = new Url({ shortUrl: code, longUrl });
-
-        await url.save();
-
-        console.log("http://localhost:8900/"+code);
-        res.status(200).json({ shortUrl: "http://localhost:8900/" + code });
-    } catch (error) {
-        console.log(error);
-        res.status(400).json({ error });
-    }
-});
-
-
-urlRouter.get("/:shortUrl", async (req: Request, res: Response) => {
-    try {
-        const shortUrl = req.params.shortUrl;
-
-        const url = await Url.findOne({ shortUrl });
-
-        if (!url) {
-            res.status(400).json({ msg: "Invalid ShortUrl" });
-        } else {
-            res.redirect(url.longUrl);
-        }
-
-    } catch (error) {
-        res.status(400).json({ error });
-    }
-});
+urlRouter.get("/:code", getLongUrl);
 
 export { urlRouter };

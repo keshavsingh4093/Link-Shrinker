@@ -1,76 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Link Shrinker</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login & Signup Page</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background-image: url('https://source.unsplash.com/random/1600x900');
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
 </head>
-<body>
-    <nav>
-       <h1 id="logo">Link Shrinker</h1>
-    </nav>
-
-    <div id="container">
-        <h1 style="margin-bottom: 30px;">Generate Short URL</h1>
-        <div id="main">
-            <input type="text" id="longUrl" placeholder="Paste Your Long URL" autocomplete="off">
-            <button onclick="generateShortUrl()">Generate</button>
+<body class="bg-gray-900 bg-opacity-75 min-h-screen flex items-center justify-center">
+  <div id="container" class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+    <!-- Login Form -->
+    <div id="login-box">
+      <h2 class="text-2xl font-bold text-center mb-6">Welcome Back</h2>
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            class="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none" 
+            placeholder="Enter your email" 
+            required
+          >
         </div>
-    </div>
-</body>
-</html>
-<script>
 
-    async function generateShortUrl() {
-        const longUrl = document.getElementById("longUrl").value;
-        console.log(longUrl);
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+          <div class="relative">
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none" 
+              placeholder="Enter your password" 
+              required
+            >
+            <button 
+              type="button" 
+              class="absolute inset-y-0 right-2 flex items-center text-gray-600" 
+              onclick="togglePasswordVisibility('password', this)"
+            >
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        >Login</button>
+      </form>
+
+      <p class="text-center text-sm text-gray-500 mt-4">
+        Don’t have an account? 
+        <button 
+          id="show-signup" 
+          class="text-blue-500 hover:underline focus:outline-none"
+          onclick="toggleForms()"
+        >Sign up</button>
+      </p>
+    </div>
+
+    <!-- Signup Form -->
+    <div id="signup-box" class="hidden">
+      <h2 class="text-xl font-semibold text-center mb-4">Create an Account</h2>
+      <form id="signup-form" class="space-y-4">
+        <div>
+          <label for="signup-name" class="block text-sm font-medium text-gray-700">Full Name</label>
+          <input 
+            type="text" 
+            id="signup-name" 
+            name="signup-name" 
+            class="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-green-400 focus:outline-none" 
+            placeholder="Enter your name" 
+            required
+          >
+        </div>
+
+        <div>
+          <label for="signup-email" class="block text-sm font-medium text-gray-700">Email</label>
+          <input 
+            type="email" 
+            id="signup-email" 
+            name="signup-email" 
+            class="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-green-400 focus:outline-none" 
+            placeholder="Enter your email" 
+            required
+          >
+        </div>
+
+        <div>
+          <label for="signup-password" class="block text-sm font-medium text-gray-700">Password</label>
+          <div class="relative">
+            <input 
+              type="password" 
+              id="signup-password" 
+              name="signup-password" 
+              class="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-green-400 focus:outline-none" 
+              placeholder="Create a password" 
+              required
+            >
+            <button 
+              type="button" 
+              class="absolute inset-y-0 right-2 flex items-center text-gray-600" 
+              onclick="togglePasswordVisibility('signup-password', this)"
+            >
+              👁️
+            </button>
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full bg-green-500 text-white py-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400"
+        >Sign Up</button>
+      </form>
+
+      <p class="text-center text-sm text-gray-500 mt-4">
+        Already have an account? 
+        <button 
+          id="show-login" 
+          class="text-blue-500 hover:underline focus:outline-none"
+          onclick="toggleForms()"
+        >Login</button>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const domain = "http://localhost:8900";
+
+    function toggleForms() {
+      const loginBox = document.getElementById('login-box');
+      const signupBox = document.getElementById('signup-box');
+
+      if (loginBox.classList.contains('hidden')) {
+        loginBox.classList.remove('hidden');
+        signupBox.classList.add('hidden');
+      } else {
+        loginBox.classList.add('hidden');
+        signupBox.classList.remove('hidden');
+      }
+    }
+
+    function togglePasswordVisibility(inputId, button) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        button.textContent = '🙈';
+      } else {
+        input.type = 'password';
+        button.textContent = '👁️';
+      }
+    }
+
+    document.getElementById("login-form").addEventListener("submit",async(event)=>{
+        event.preventDefault();
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        console.log(email,password);
+
         try {
-            const response = await fetch("http://localhost:8900/generate-short-url",{
+            const response = await fetch(`${domain}/login`,{
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/json"
                                 },
-                                body: JSON.stringify({longUrl})
+                                body: JSON.stringify({ email, password })
                             });
-
+            
             if(response.status == 200){
-                const data = await response.json();
-                const shortUrl = data.shortUrl;
-                displayShortUrl(shortUrl);
+                window.location.href = "./home.html";
             }else{
-                displayError();
+                const res = await response.json();
+                alert(res.msg);
             }
 
         } catch (error) {
-            console.log(error.message);
+            alert(error);
         }
-    }
 
-    function displayShortUrl(shortUrl) {
-        document.getElementById("container").innerHTML = `
-            <h2 style="margin-bottom: 30px;">Generated Short URL</h2>
-            <div class="short-url-container">
-                <input type="text" id="short-url" value=${shortUrl} readonly>
-                <button onclick="copyShortUrl()">Copy</button>
-            </div>
+    })
 
-        `;
-    }
+    document.getElementById("signup-form").addEventListener("submit",async(event)=>{
+        event.preventDefault();
+        const name = document.getElementById("signup-name").value;
+        const email = document.getElementById("signup-email").value;
+        const password = document.getElementById("signup-password").value;
 
+        console.log(name,email,password);
 
-    function copyShortUrl() {
-    const shortUrlInput = document.getElementById("short-url");
-    shortUrlInput.select(); // Select the text in the input
-    shortUrlInput.setSelectionRange(0, 99999); // For mobile devices
-    navigator.clipboard.writeText(shortUrlInput.value) // Copy to clipboard
-        .then(() => {
-            alert("Short URL copied to clipboard!");
-        })
-        .catch((err) => {
-            console.error("Failed to copy: ", err);
-        });
-    }
+        try {
+            const response = await fetch(`${domain}/signup`,{
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({ name, email, password })
+                            });
+            
+            if(response.status == 201){
+                window.location.href = "./home.html";
+            }else{
+                const res = await response.json();
+                alert(res.msg);
+            }
 
-
-</script>
+        } catch (error) {
+            alert(error);
+        }        
+    })
+  </script>
+</body>
+</html>

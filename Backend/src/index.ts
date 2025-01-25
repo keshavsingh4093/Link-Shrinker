@@ -1,6 +1,8 @@
-import express, { Request, Response } from "express";
 import { connectToDatabase } from "./dbConnection";
+import { userRouter } from "./routes/user.router";
 import { urlRouter } from "./routes/url.router";
+import cookieParser from "cookie-parser"
+import express from "express";
 import cors from "cors";
 import "dotenv/config"
 
@@ -11,7 +13,11 @@ app.use(cors());
 
 app.use(express.json());
 
-app.use(urlRouter);
+app.use(cookieParser());
+
+app.use("user", userRouter);
+
+app.use("url",urlRouter);
 
 app.listen(PORT, async () => {
   await connectToDatabase();

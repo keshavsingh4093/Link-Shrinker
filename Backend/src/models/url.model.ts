@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
 
 const urlSchema = new Schema({
-    shortUrl: {
+    code: {
         type: String,
         required: true
     },
