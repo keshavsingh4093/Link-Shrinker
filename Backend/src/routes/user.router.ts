@@ -1,13 +1,9 @@
-import { login, signUp } from "../controllers/user.controller.ts";
+import { login, signUp } from "../controllers/user.controller";
 import { Router } from "express";
 
 const userRouter = Router();
 
-userRouter.post("/signup", async (req, res) => {
-    return await signUp(req, res)
-});
-
-
+userRouter.post("/signup", signUp);
 
 userRouter.post("/login", login);
 
