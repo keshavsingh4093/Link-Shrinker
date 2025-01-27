@@ -4,11 +4,9 @@ import { Router } from "express";
 
 const urlRouter = Router();
 
-urlRouter.use(checkForToken);
+urlRouter.post("/generate", checkForToken, generateShortUrl);
 
-urlRouter.post("/generate", generateShortUrl);
-
-urlRouter.get("/geturls", getUrls);
+urlRouter.get("/geturls", checkForToken, getUrls);
 
 urlRouter.get("/:code", getLongUrl);
 
