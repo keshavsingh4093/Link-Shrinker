@@ -7,6 +7,7 @@
 
 body{
     background-color: snow;
+    scroll-behavior: smooth;
 }
 
 nav {
@@ -25,6 +26,7 @@ nav > div:first-child{
 }
 
 nav > div:last-child{
+    font-family: 'sans-serif';
     display: flex;
     align-items: center;
     font-size: 20px;
@@ -40,77 +42,3 @@ nav > div:last-child{
 .nav-a:hover, .nav-a:active{
     color: rgb(227, 18, 18);
 }
-
-/*
-
-#short-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 20px;
-}
-
-#logo {
-  color: white;
-  padding-left: 50px;
-}
-
-#container{
-    background-color: seashell;
-    box-shadow: 0px 0px 2px black;
-    width: 600px;
-    height: 300px; 
-    margin: auto;
-    margin-top: 100px;
-    padding: 50px;
-    border-radius: 10px;
-}
-
-#main{
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; 
-    justify-content: center;
-    gap: 20px;
-}
-
-#main>input[type="text"]{
-    font-size: 18px;
-    height: 30px;
-    padding: 2px;
-    border-radius: 5px;
-}
-
-#main>button{
-    background-color: grey;
-    font-size: 20px;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-input#short-url {
-    padding: 8px;
-    font-size: 14px;
-    width: 300px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-    cursor: pointer;
-}
-
-#copy {
-    padding: 8px 12px;
-    font-size: 14px;
-    color: #fff;
-    background-color: #007BFF;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#copy:hover {
-    background-color: #0056b3;
-} 
-    */
