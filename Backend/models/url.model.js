@@ -12,7 +12,8 @@ const urlSchema = new Schema({
     timestamp: {
         type: Date,
         default: Date.now
-    }
+    },
+    title: String
 });
 
 const Url = model("url", urlSchema);

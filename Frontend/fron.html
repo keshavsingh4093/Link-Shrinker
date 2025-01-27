@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Shortener</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+  <nav class="bg-blue-600 text-white py-4 px-6 flex justify-between items-center">
+    <h1 class="text-2xl font-bold">URL Shortener</h1>
+    <button id="menuToggle" class="md:hidden focus:outline-none">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+    <ul id="navMenu" class="hidden md:flex gap-6">
+      <li><button id="navHome" class="hover:underline">Home</button></li>
+      <!-- <li><button id="navGenerate" class="hover:underline">Generate URLs</button></li> -->
+      <li><button id="navPrevious" class="hover:underline">Previous URLs</button></li>
+    </ul>
+  </nav>
+
+  <!-- Dropdown Menu for Small Screens -->
+  <div id="mobileMenu" class="hidden bg-blue-600 text-white md:hidden">
+    <ul class="flex flex-col gap-4 px-6 py-4">
+      <li><button id="mobileNavHome" class="hover:underline">Home</button></li>
+      <!-- <li><button id="mobileNavGenerate" class="hover:underline">Generate URLs</button></li> -->
+      <li><button id="mobileNavPrevious" class="hover:underline">Previous URLs</button></li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <main class="flex-grow container mx-auto p-4">
+    <!-- Home Text Section -->
+    <section id="homeSection" class="text-center">
+      <h2 class="text-3xl font-semibold text-gray-800">Welcome to URL Shortener</h2>
+      <p class="text-gray-600 mt-4">
+        Shorten your long URLs and keep track of them efficiently.  
+        Create, manage, and view all your URLs in one place!
+      </p>
+    </section>
+
+    <!-- Generate URLs Section -->
+    <section id="generateSection">
+      <div class="bg-white w-full max-w-xl mx-auto shadow-lg rounded-lg p-6">
+        <h2 class="text-2xl font-semibold mb-4 text-gray-800">Generate Short URL</h2>
+        <form id="urlForm" class="flex flex-col gap-4">
+          <input 
+            type="text" 
+            id="urlTitle" 
+            placeholder="Enter a title (optional)" 
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+          >
+          <input 
+            type="url" 
+            id="longUrl" 
+            placeholder="Enter your long URL" 
+            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-200"
+            required
+          >
+          <button 
+            type="button" 
+            id="generateBtn"
+            class="bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-600 transition"
+          >
+            Generate Short URL
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Previous URLs Section -->
+    <section id="previousSection" class="hidden">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-800">Previous URLs</h2>
+      <div id="urlsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <p class="col-span-full text-gray-500 text-sm" id="noUrlsText">No URLs generated yet. Start shortening URLs above!</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- JavaScript -->
+  <script>
+    // Navbar elements
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const navMenu = document.getElementById('navMenu');
+    
+    // Section elements
+    const homeSection = document.getElementById('homeSection');
+    const generateSection = document.getElementById('generateSection');
+    const previousSection = document.getElementById('previousSection');
+    const urlsGrid = document.getElementById('urlsGrid');
+    const noUrlsText = document.getElementById('noUrlsText');
+
+    // Mock short URL generator
+    const generateShortUrl = (longUrl) => {
+      return 'https://short.ly/' + btoa(longUrl).slice(0, 6);
+    };
+
+    // URLs data
+    const urls = [];
+
+    // Toggle Mobile Menu
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    // Show only the selected section
+    function showSection(section) {
+      homeSection.classList.add('hidden');
+      generateSection.classList.add('hidden');
+      previousSection.classList.add('hidden');
+      section.classList.remove('hidden');
+      // Hide mobile menu after selecting a section
+      mobileMenu.classList.add('hidden');
+    }
+
+    // Navbar handlers
+    document.querySelectorAll('#navHome, #mobileNavHome').forEach(button => {
+      button.addEventListener('click', () => showSection(homeSection));
+    });
+
+    document.querySelectorAll('#navGenerate, #mobileNavGenerate').forEach(button => {
+      button.addEventListener('click', () => showSection(generateSection));
+    });
+
+    document.querySelectorAll('#navPrevious, #mobileNavPrevious').forEach(button => {
+      button.addEventListener('click', () => {
+        showSection(previousSection);
+        updateUrlsGrid();
+      });
+    });
+
+    // Handle URL shortening
+    document.getElementById('generateBtn').addEventListener('click', () => {
+      const longUrl = document.getElementById('longUrl').value.trim();
+      const title = document.getElementById('urlTitle').value.trim() || 'Untitled';
+
+      if (longUrl) {
+        const shortUrl = generateShortUrl(longUrl);
+
+        // Add URL to the list
+        urls.push({ title, longUrl, shortUrl });
+
+        // Clear inputs
+        document.getElementById('longUrl').value = '';
+        document.getElementById('urlTitle').value = '';
+        alert('Short URL generated successfully!');
+      } else {
+        alert('Please enter a valid URL!');
+      }
+    });
+
+    // Update URLs grid
+    function updateUrlsGrid() {
+      urlsGrid.innerHTML = '';
+      if (urls.length === 0) {
+        noUrlsText.classList.remove('hidden');
+      } else {
+        noUrlsText.classList.add('hidden');
+        urls.forEach(({ title, longUrl, shortUrl }) => {
+          const urlCard = document.createElement('div');
+          urlCard.classList.add('border', 'border-gray-300', 'rounded-lg', 'p-4', 'shadow-sm', 'bg-white');
+          urlCard.innerHTML = `
+            <h3 class="text-lg font-semibold text-gray-800">${title}</h3>
+            <p class="text-sm text-gray-500 mt-2">Long URL:</p>
+            <a href="${longUrl}" target="_blank" class="text-blue-500 underline text-sm">${longUrl}</a>
+            <p class="text-sm text-gray-500 mt-2">Short URL:</p>
+            <a href="${shortUrl}" target="_blank" class="text-green-500 underline text-sm">${shortUrl}</a>
+          `;
+          urlsGrid.appendChild(urlCard);
+        });
+      }
+    }
+
+    // Show the home section by default
+    showSection(homeSection);
+  </script>
+</body>
+</html>

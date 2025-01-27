@@ -1,7 +1,7 @@
 import { connect } from "mongoose";
 import "dotenv/config";
 
-const DB_URL: string = process.env.DB_URL || "";
+const DB_URL = process.env.DB_URL;
 
 async function connectToDatabase() {
     try {

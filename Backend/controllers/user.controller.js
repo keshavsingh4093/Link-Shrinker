@@ -1,11 +1,9 @@
-import { SignupRequest, SignupResponse } from "../types/user/user.signup";
-import { LoginRequest, LoginResponse } from "../types/user/user.login";
-import { User } from "../models/user.model";
+import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import argon2 from "argon2";
 import "dotenv/config";
 
-const signUp = async( req: SignupRequest, res: SignupResponse ) => {
+const signUp = async(req, res) => {
   try {
     const { email, name, password } = req.body;
 
@@ -37,9 +35,10 @@ const signUp = async( req: SignupRequest, res: SignupResponse ) => {
   }
 }; 
 
-const login = async (req: LoginRequest, res: LoginResponse) => {
+const login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log(email, password);
 
     const user = await User.findOne({ email });
 
@@ -59,13 +58,13 @@ const login = async (req: LoginRequest, res: LoginResponse) => {
 
     const accessToken = jwt.sign(
       { id: user._id, name: user.name },
-      "asdfghjkl",
+      process.env.JWT_ACCESS_PASS,
       { expiresIn: "1h" }
     );
 
     const refreshToken = jwt.sign(
       { id: user._id, name: user.name },
-      "zxcvbnm",
+      process.env.JWT_REFRESH_PASS,
       { expiresIn: "7d" }
     );
 
@@ -83,9 +82,7 @@ const login = async (req: LoginRequest, res: LoginResponse) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    console.log(accessToken);
-    console.log(refreshToken);
-
+    console.log("login successful");
     res.status(200).json({ success: true, message: "login successful" });
   } catch (error) {
     console.log(error);
@@ -93,4 +90,60 @@ const login = async (req: LoginRequest, res: LoginResponse) => {
   }
 };
 
-export { login, signUp };
+const checkForToken = async (req, res, next) => {
+  const accessToken = req.cookies.accessToken;
+
+  if (accessToken) {
+    try {
+      console.log("In the If Part");
+      const decode = jwt.verify(accessToken, process.env.JWT_ACCESS_PASS);
+
+      const user = await User.findOne({ _id: decode.id });
+
+      req.user = user;
+
+      next();
+    } catch (error) {
+      console.log("invalid access token");
+      res.status(401).json({ message: "Unauthorized Access" });
+    }
+  } else {
+    console.log("In the else Part");
+    try {
+      const refreshToken = req.cookies["refreshToken"];
+      console.log("refreshToken", refreshToken);
+
+      if (!refreshToken) {
+        console.log("Neither Access nor Refresh token is present");
+        return res.status(401).json({ message: "Unauthorized Access" });
+      }
+
+      const decode = jwt.verify(refreshToken, process.env.JWT_REFRESH_PASS);
+
+      console.log(decode);
+      const newAccessToken = jwt.sign(
+        { id: decode.id, name: decode.name },
+        process.env.JWT_ACCESS_PASS,
+        { expiresIn: "1h" }
+      );
+
+      res.cookie("accessToken", newAccessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 60 * 60 * 1000,
+      });
+
+      const user = await User.findOne({ _id: decode.id });
+
+      req.user = user;
+
+      next();
+    } catch (error) {
+      console.log("invalid refresh token");
+      res.status(401).json({ message: "Unauthorized Access" });
+    }
+  }
+};
+
+export { login, signUp, checkForToken };
