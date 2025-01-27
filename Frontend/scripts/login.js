@@ -24,6 +24,7 @@ document.getElementById("login-form").addEventListener("submit", async (event) =
                             headers: {
                                 "Content-Type": "application/json"
                             },
+                            credentials:"include",
                             body: JSON.stringify({ email, password })
                         });
 
