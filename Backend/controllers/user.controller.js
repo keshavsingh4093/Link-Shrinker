@@ -7,8 +7,6 @@ const signUp = async(req, res) => {
   try {
     const { email, name, password } = req.body;
 
-    console.log(email, name, password);
-
     const chechUser = await User.findOne({ email });
 
     if (chechUser) {
@@ -38,7 +36,6 @@ const signUp = async(req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(email, password);
 
     const user = await User.findOne({ email });
 
@@ -71,14 +68,14 @@ const login = async (req, res) => {
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: None,
       maxAge: 60 * 60 * 1000,
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: None,
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -120,7 +117,6 @@ const checkForToken = async (req, res, next) => {
 
       const decode = jwt.verify(refreshToken, process.env.JWT_REFRESH_PASS);
 
-      console.log(decode);
       const newAccessToken = jwt.sign(
         { id: decode.id, name: decode.name },
         process.env.JWT_ACCESS_PASS,
@@ -130,7 +126,7 @@ const checkForToken = async (req, res, next) => {
       res.cookie("accessToken", newAccessToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: None,
         maxAge: 60 * 60 * 1000,
       });
 
