@@ -16,8 +16,6 @@ document.getElementById("login-form").addEventListener("submit", async (event) =
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    console.log(email, password);
-
     try {
         const response = await fetch(`${domain}/user/login`,{
                             method: "POST",
@@ -30,7 +28,6 @@ document.getElementById("login-form").addEventListener("submit", async (event) =
 
         if (response.status == 200) {
           const data = await response.json();
-          console.log(data);
           window.location.href = "./index.html";
         }else{
             const res = await response.json();

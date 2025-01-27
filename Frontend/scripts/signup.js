@@ -19,8 +19,6 @@ document
     const email = document.getElementById("signup-email").value;
     const password = document.getElementById("signup-password").value;
 
-    console.log(name, email, password);
-
     try {
       const response = await fetch(`${domain}/user/signup`, {
         method: "POST",
