@@ -9,9 +9,16 @@ import "dotenv/config"
 const app = express();
 const PORT = process.env.PORT;
 
-app.use(cors({
-  credentials: true
-}));
+const frontendUrl = "https://linkshrinker.netlify.app";
+
+const corsOptions = {
+  origin: frontendUrl,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 

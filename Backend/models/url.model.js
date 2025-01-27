@@ -5,6 +5,10 @@ const urlSchema = new Schema({
         type: String,
         required: true
     },
+    title: {
+        type: String,
+        required: true
+    },
     longUrl: {
         type: String,
         required: true
@@ -13,7 +17,6 @@ const urlSchema = new Schema({
         type: Date,
         default: Date.now
     },
-    title: String
 });
 
 const Url = model("url", urlSchema);

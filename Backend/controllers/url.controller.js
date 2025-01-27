@@ -5,9 +5,8 @@ let counter = 1;
 
 const generateShortUrl = async (req, res) => {
   try {
+    const user = req.user;
     const { longUrl, title } = req.body;
-    
-    const requestUrl = req.protocol + "://" + req.get("host");
 
     const code = base62.encode(counter);
     counter++;
@@ -16,7 +15,13 @@ const generateShortUrl = async (req, res) => {
 
     await url.save();
 
-    const shortUrl = `${requestUrl}/${code}`;
+    user.urls.push(url._id);
+
+    await user.save();
+
+    const apiUrl = "https://link-shrinker-gc27.onrender.com";
+
+    const shortUrl = `${apiUrl}/${code}`;
 
     console.log(shortUrl);
 
@@ -46,23 +51,29 @@ const getLongUrl = async (req, res) => {
 
 const getUrls = async (req, res) => {
   try {
+    const user = req.user;
     const urls = await Url.aggregate([
+      {
+        $match: {
+          _id: { $in: user.urls },
+        },
+      },
       {
         $addFields: {
           shortUrl: {
-            $concat: ["http://localhost:8900/","$code"]
-          }
-        }
+            $concat: ["https://link-shrinker-gc27.onrender.com/", "$code"],
+          },
+        },
       },
       {
         $project: {
           _id: 0,
-          code: 0
-        }
-      }
+          code: 0,
+        },
+      },
     ]);
 
-    res.status(200).json({ urls });
+    res.status(200).json({ name:user.name, urls });
   } catch (error) {
     console.log(error.message);
     res.status(400).json({ sucess: false, message: "Something went wrong" });

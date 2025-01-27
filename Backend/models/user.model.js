@@ -12,6 +12,10 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true,
+    },
+    urls: {
+        type: [Schema.Types.ObjectId],
+        ref:"url"
     }
 });
 

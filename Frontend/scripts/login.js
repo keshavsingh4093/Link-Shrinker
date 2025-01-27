@@ -1,4 +1,4 @@
-const domain = "http://localhost:8900";
+const domain = "https://link-shrinker-gc27.onrender.com";
 
 function togglePasswordVisibility(inputId, button) {
   const input = document.getElementById(inputId);

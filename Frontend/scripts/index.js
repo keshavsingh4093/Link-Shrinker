@@ -1,4 +1,4 @@
-const domain = "http://localhost:8900";
+const domain = "https://link-shrinker-gc27.onrender.com";
 
 document.getElementById("urlForm").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -11,6 +11,7 @@ document.getElementById("urlForm").addEventListener("submit", async (e) => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify({ longUrl, title }),
     });
 
