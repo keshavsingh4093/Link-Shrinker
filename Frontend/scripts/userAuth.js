@@ -22,4 +22,4 @@ async function checkUserAuthentication() {
   }
 }
 
-//checkUserAuthentication();
+checkUserAuthentication();
