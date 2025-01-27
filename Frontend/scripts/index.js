@@ -1,4 +1,3 @@
-const domain = "https://link-shrinker-gc27.onrender.com";
 
 document.getElementById("urlForm").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -36,7 +35,6 @@ function displayShortUrl(shortUrl) {
 
   document.getElementById("short-container").innerHTML = `
           <h2 class="text-2xl font-semibold mb-4 text-gray-800">Generated Short URL</h2>
-          
           <div class="flex gap-4">
             <input type="text" 
               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring focus:ring-blue-200" 
