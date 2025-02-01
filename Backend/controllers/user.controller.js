@@ -68,14 +68,14 @@ const login = async (req, res) => {
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "None",
+      sameSite: "strict",
       maxAge: 60 * 60 * 1000,
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "None",
+      sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -87,59 +87,4 @@ const login = async (req, res) => {
   }
 };
 
-const checkForToken = async (req, res, next) => {
-  const accessToken = req.cookies.accessToken;
-
-  if (accessToken) {
-    try {
-      console.log("In the If Part");
-      const decode = jwt.verify(accessToken, process.env.JWT_ACCESS_PASS);
-
-      const user = await User.findOne({ _id: decode.id });
-
-      req.user = user;
-
-      next();
-    } catch (error) {
-      console.log("invalid access token");
-      res.status(401).json({ message: "Unauthorized Access" });
-    }
-  } else {
-    console.log("In the else Part");
-    try {
-      const refreshToken = req.cookies["refreshToken"];
-      console.log("refreshToken", refreshToken);
-
-      if (!refreshToken) {
-        console.log("Neither Access nor Refresh token is present");
-        return res.status(401).json({ message: "Unauthorized Access" });
-      }
-
-      const decode = jwt.verify(refreshToken, process.env.JWT_REFRESH_PASS);
-
-      const newAccessToken = jwt.sign(
-        { id: decode.id, name: decode.name },
-        process.env.JWT_ACCESS_PASS,
-        { expiresIn: "1h" }
-      );
-
-      res.cookie("accessToken", newAccessToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "None",
-        maxAge: 60 * 60 * 1000,
-      });
-
-      const user = await User.findOne({ _id: decode.id });
-
-      req.user = user;
-
-      next();
-    } catch (error) {
-      console.log("invalid refresh token");
-      res.status(401).json({ message: "Unauthorized Access" });
-    }
-  }
-};
-
-export { login, signUp, checkForToken };
+export { login, signUp };
