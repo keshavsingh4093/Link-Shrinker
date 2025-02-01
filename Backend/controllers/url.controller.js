@@ -1,15 +1,32 @@
 import { redis } from "../redisConnection.js";
 import { Url } from "../models/url.model.js";
-import * as base62 from "base62-ts";
+import base62 from "base62";
+
+async function getCounter() {
+  try {
+      const { code } = await Url.findOne({}, { _id: 0, code: 1 }).sort({ timestamp: -1 });
+      const counter = base62.decode(code) + 1;
+      console.log(typeof counter, counter);
+      return counter;
+  } catch (error) {
+      console.log("could't find counter", error.message);
+  }
+}
 
 const generateShortUrl = async (req, res) => {
   try {
     const user = req.user;
     const { longUrl, title } = req.body;
 
-    const counter = await redis.get("counter");
+    let counter = Number(await redis.get("counter"));
+
+    if (!counter) {
+      counter = await getCounter();
+    }
 
     await redis.set("counter", counter + 1);
+
+    console.log(counter);
 
     const code = base62.encode(counter);
 
@@ -40,8 +57,11 @@ const getLongUrl = async (req, res) => {
 
     const urlFromRedis = await redis.get(code);
     if (urlFromRedis) {
+        console.log(`caching hitting for code:${code}`);
         return res.status(301).redirect(urlFromRedis);
     }
+
+    console.log(`caching missing for code:${code}`);
 
     const url = await Url.findOne({ code });
 

@@ -1,5 +1,6 @@
 import { connect } from "mongoose";
 import "dotenv/config";
+import { Url } from "./models/url.model.js";
 
 const DB_URL = process.env.DB_URL;
 

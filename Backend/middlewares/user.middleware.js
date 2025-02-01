@@ -23,7 +23,6 @@ const checkForToken = async (req, res, next) => {
     console.log("In the else Part");
     try {
       const refreshToken = req.cookies["refreshToken"];
-      console.log("refreshToken", refreshToken);
 
       if (!refreshToken) {
         console.log("Neither Access nor Refresh token is present");
