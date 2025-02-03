@@ -44,7 +44,7 @@ const generateShortUrl = async (req, res) => {
 
     console.log(shortUrl);
 
-    res.status(200).json({ shortUrl });
+    res.status(201).json({ shortUrl });
   } catch (error) {
     console.log(error);
     res.status(400).json({ error });
@@ -57,8 +57,8 @@ const getLongUrl = async (req, res) => {
 
     const urlFromRedis = await redis.get(code);
     if (urlFromRedis) {
-        console.log(`caching hitting for code:${code}`);
-        return res.status(301).redirect(urlFromRedis);
+      console.log(`caching hitting for code:${code}`);
+      return res.status(301).redirect(urlFromRedis);
     }
 
     console.log(`caching missing for code:${code}`);
@@ -69,7 +69,7 @@ const getLongUrl = async (req, res) => {
       res.status(404).json({ msg: "Invalid ShortUrl" });
     } else {
       await redis.set(code, url.longUrl);
-      res.status(301).redirect(url.longUrl);
+      res.status(302).redirect(url.longUrl);
     }
   } catch (error) {
     res.status(400).json({ error });
