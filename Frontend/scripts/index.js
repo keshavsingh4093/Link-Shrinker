@@ -14,7 +14,7 @@ document.getElementById("urlForm").addEventListener("submit", async (e) => {
       body: JSON.stringify({ longUrl, title }),
     });
 
-    if (response.status == 200) {
+    if (response.status == 201) {
       const data = await response.json();
       const shortUrl = data.shortUrl;
       displayShortUrl(shortUrl);
