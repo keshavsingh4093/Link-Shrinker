@@ -40,7 +40,6 @@ const checkForToken = async (req, res, next) => {
       res.cookie("accessToken", newAccessToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
         maxAge: 60 * 60 * 1000,
       });
 
