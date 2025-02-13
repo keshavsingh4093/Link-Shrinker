@@ -92,7 +92,7 @@ The Link Shrinker application is deployed and accessible at the following URLs:
 - `:code` - Short URL code.
 
 **Response**:
-- **301 Moved Permanently**: Redirects to the long URL.
+- **302 Temporarily Moved**: Redirects to the long URL.
 - **404 Not Found**: Short URL code does not exist.
 
 ---
