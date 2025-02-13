@@ -7,6 +7,10 @@ Link Shrinker is a web application that allows users to generate short URLs for 
 - **Generate Short URLs**: Convert long URLs into shorter, shareable links.
 - **View Previously Generated URLs**: Navigate to the "Previous URLs" page to see all previously created short URLs.
 - **Session Management**: Once logged in, you remain logged in for 7 days without needing to log in again.
+- **Caching for Improved Performance**: Reduces database requests by storing mappings of short URLs to long URLs in Redis.
+- **Counter Management with Caching**: Retrieves the counter value from cache and updates it each time a new URL is generated.
+- **Edge Case Handling for Counter Value**: If the counter value is missing in the cache, it is recalculated from the latest generated code.
+- **Scheduled Cleanup**: A cron job removes all long URLs from Redis at 12 AM daily to maintain optimal performance.
 
 ---
 
